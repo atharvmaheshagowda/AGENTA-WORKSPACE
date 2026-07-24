@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Productivity Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css?v=3">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">APS</div>
+                <h2>AI Productivity</h2>
+            </div>
+            
+            <div class="user-profile">
+                <div class="level-badge">Lvl <span id="user-level">1</span></div>
+                <div class="xp-bar-container">
+                    <div class="xp-bar-fill" id="xp-fill"></div>
+                </div>
+                <div class="xp-text"><span id="user-xp">0</span> XP</div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-link active" data-view="task-view">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path></svg>
+                    Task Manager
+                </a>
+                <a href="#" class="nav-link" data-view="meeting-view">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                    Meeting Processor
+                </a>
+                <a href="#" class="nav-link" data-view="matrix-view">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Eisenhower Matrix
+                </a>
+                <a href="#" class="nav-link" data-view="schedule-view">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    Schedule
+                </a>
+                <a href="#" class="nav-link" data-view="analytics-view">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+                    Weekly Analytics
+                </a>
+                <a href="#" class="nav-link" data-view="history-view">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                    Completed Tasks
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- View A: Task Manager -->
+            <section id="task-view" class="view-section active">
+                <header class="view-header">
+                    <h1>Task Breakdown & Planner</h1>
+                    <p>Enter a big goal and let AI decompose it into actionable tasks.</p>
+                </header>
+                
+                <div class="goal-input-container">
+                    <input type="text" id="goal-input" placeholder="What's your big goal for today?" autocomplete="off">
+                    <select id="blocker-select" class="blocker-select" title="Depends on">
+                        <option value="">No Blockers</option>
+                    </select>
+                    <button id="add-btn" class="primary-btn" style="padding: 16px; display: flex; align-items: center; justify-content: center;" title="Add Task Directly">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                    <button id="breakdown-btn" class="primary-btn">
+                        <span>Break It Down</span>
+                        <div class="spinner hidden" id="goal-spinner"></div>
+                    </button>
+                </div>
+
+                <div class="task-list-container">
+                    <h2>Your Tasks</h2>
+                    <div id="task-list" class="task-grid">
+                        <!-- Tasks will be dynamically injected here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- View B: Meeting Processor -->
+            <section id="meeting-view" class="view-section">
+                <header class="view-header">
+                    <h1>Meeting Processor</h1>
+                    <p>Paste your raw meeting transcript to generate an executive summary and extract action items.</p>
+                </header>
+
+                <div class="transcript-container">
+                    <textarea id="transcript-input" rows="8" placeholder="Paste your raw transcript text here..."></textarea>
+                    <button id="summarize-btn" class="primary-btn">
+                        <span>Summarize & Extract</span>
+                        <div class="spinner hidden" id="meeting-spinner"></div>
+                    </button>
+                </div>
+
+                <div id="meeting-results" class="meeting-results hidden">
+                    <div class="result-card summary-card">
+                        <h3>Executive Summary</h3>
+                        <p id="summary-text"></p>
+                    </div>
+                    <div class="result-card action-card">
+                        <h3>Extracted Action Items</h3>
+                        <p>These have been automatically added to your Task Manager.</p>
+                        <ul id="action-items-list">
+                            <!-- Action items list -->
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- View C: Eisenhower Matrix -->
+            <section id="matrix-view" class="view-section">
+                <header class="view-header">
+                    <h1>Eisenhower Matrix</h1>
+                    <p>Auto-sort your tasks based on urgency and importance using AI.</p>
+                </header>
+                
+                <div class="matrix-actions" style="margin-bottom: 20px;">
+                    <button id="auto-sort-btn" class="primary-btn">
+                        <span>Auto-Sort with AI</span>
+                        <div class="spinner hidden" id="sort-spinner"></div>
+                    </button>
+                </div>
+                
+                <div class="matrix-grid">
+                    <div class="quadrant urgent-important">
+                        <h3>Do First (Urgent & Important)</h3>
+                        <div class="quadrant-tasks" id="quadrant-1"></div>
+                    </div>
+                    <div class="quadrant important-not-urgent">
+                        <h3>Schedule (Important, Not Urgent)</h3>
+                        <div class="quadrant-tasks" id="quadrant-2"></div>
+                    </div>
+                    <div class="quadrant urgent-not-important">
+                        <h3>Delegate (Urgent, Not Important)</h3>
+                        <div class="quadrant-tasks" id="quadrant-3"></div>
+                    </div>
+                    <div class="quadrant neither">
+                        <h3>Don't Do (Neither)</h3>
+                        <div class="quadrant-tasks" id="quadrant-4"></div>
+                    </div>
+                </div>
+            </section>
+            <!-- View D: Analytics -->
+            <section id="analytics-view" class="view-section">
+                <header class="view-header">
+                    <h1>Weekly Productivity Review</h1>
+                    <p>AI-generated insights on your performance.</p>
+                </header>
+                <div class="matrix-actions" style="margin-bottom: 20px;">
+                    <button id="generate-analytics-btn" class="primary-btn">
+                        <span>Generate Review</span>
+                        <div class="spinner hidden" id="analytics-spinner"></div>
+                    </button>
+                </div>
+                <div id="analytics-content" class="result-card hidden">
+                    <div id="analytics-stats" style="margin-bottom: 20px; font-weight: bold; color: var(--accent);"></div>
+                    <canvas id="productivity-chart" width="400" height="200" style="margin-bottom: 20px;"></canvas>
+                    <div id="analytics-markdown"></div>
+                </div>
+            </section>
+
+            <!-- View E: Completed Tasks (History) -->
+            <section id="history-view" class="view-section">
+                <header class="view-header">
+                    <h1>Completed Tasks</h1>
+                    <p>A history of all your conquered goals.</p>
+                </header>
+                
+                <div class="task-list-container">
+                    <div id="completed-task-list" class="task-grid">
+                        <!-- Completed Tasks will be dynamically injected here -->
+                    </div>
+                </div>
+            </section>
+            
+            <!-- View F: Schedule View -->
+            <section id="schedule-view" class="view-section">
+                <header class="view-header">
+                    <h1>Daily Schedule</h1>
+                    <p>Let AI map out your perfect day.</p>
+                </header>
+                <div class="matrix-actions" style="margin-bottom: 20px;">
+                    <button id="generate-schedule-btn" class="primary-btn">
+                        <span>Generate Smart Schedule</span>
+                        <div class="spinner hidden" id="schedule-spinner"></div>
+                    </button>
+                </div>
+                <div id="schedule-timeline" class="schedule-timeline">
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+    <!-- Focus Mode Overlay -->
+    <div id="focus-overlay" class="focus-overlay hidden">
+        <div class="focus-content">
+            <h2 id="focus-task-title">Task Title</h2>
+            <div id="focus-loading" class="hidden">
+                <div class="spinner"></div> Generating Pomodoro Breakdown...
+            </div>
+            <ul id="focus-microsteps" class="focus-microsteps"></ul>
+            <div id="focus-timer" class="focus-timer">15:00</div>
+            <div class="focus-controls">
+                <button id="focus-start-btn" class="primary-btn">Start</button>
+                <button id="focus-pause-btn" class="primary-btn hidden">Pause</button>
+                <button id="focus-solly-btn" class="primary-btn" style="background-color: #8b5cf6;">Ask Solly</button>
+                <button id="focus-cancel-btn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Solly Assistant Floating Chat -->
+    <div class="solly-chat-widget">
+        <button id="solly-toggle" class="solly-btn">
+            <svg viewBox="0 0 24 24" width="50" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        </button>
+        <div id="solly-window" class="solly-window hidden">
+            <div class="solly-header">
+                <h3>Solly AI</h3>
+                <button id="solly-close" class="solly-close-btn">&times;</button>
+            </div>
+            <div id="solly-messages" class="solly-messages">
+                <div class="message system">
+                    Hi! I'm Solly. I can see your tasks and help you prioritize. What do you need?
+                </div>
+            </div>
+            <form id="solly-form" class="solly-input-area">
+                <button type="button" id="mic-btn" class="mic-btn" title="Voice Command">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                </button>
+                <input type="text" id="solly-input" placeholder="Ask Solly or give a command..." autocomplete="off">
+                <button type="submit" id="solly-send">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/app_v4.js"></script>
+</body>
+</html>
